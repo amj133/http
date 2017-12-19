@@ -1,57 +1,38 @@
 require 'socket'
 require 'pry'
-require './lib/http_formatter.rb'
+require './lib/server'
+require './lib/response'
+require './lib/request'
 
-tcp_server = TCPServer.new(9292) # establish server port
-formatter = HTTPFormatter.new
-hello_counter = 0
-request_counter = 0
-exit_server = false
+tcp_server = TCPServer.new(9292)
+server = Server.new
+request = Request.new
+response = Response.new
+post = PostRequest.new
 
-until formatter.path == "/shutdown"
-# until exit_server == true
+until request.path == "/shutdown"
   puts "Ready for a request"
-  client = tcp_server.accept # establish client port
-  request_counter += 1
-  #----------------------------Stores & Parses request
-  request = formatter.request_lines(client)
-  formatter.parse_request(request)
-  footer = formatter.create_response_footer
-  #----------------------------Potential responses
-  # body1 = ""
-  # body2 = "Hello World! (#{hello_counter})\n\n"
-  # body3 = "#{Time.now.strftime('%l:%M%p on %A, %b %e, %Y').lstrip}\n\n"
-  # body4 =  "Total Requests: #{request_counter}\n\n"
-  # body5 = "Request path not supported :(\n\n"
-  #----------------------------Print the request to server screen
+  client = tcp_server.accept
+
+  request_lines = server.request_lines(client)
+  # post.read_content_length(request_lines)
+  # post_body = server.post_request_body(client, post)
+  # binding.pry
+  request.parse(request_lines)
+
+  response_message = response.create_message(request)
+  response_footer = response.create_response_footer(request)
+  response_body = response.create_response_body(response_message + response_footer)
+  response_header = response.create_response_header
+
   puts "Got this request:"
-  puts request.inspect
-  #----------------------------Create our response depending on path
-  # if formatter.path == "/"
-  #   response = body1 + footer
-  #   formatter.response(response)
-  # elsif formatter.path == "/hello"
-  #   response = body2 + footer
-  #   formatter.response(response)
-  #   hello_counter += 1
-  # elsif formatter.path == "/datetime"
-  #   response = body3 + footer
-  #   formatter.response(response)
-  # elsif formatter.path == "/shutdown"
-  #   response = body4 + footer
-  #   formatter.response(response)
-  #   exit_server = true
-  # else
-  #   response = body5 + footer
-  #   formatter.response(response)
-  # end
-  #----------------------------Send the response (w/ body) to the client
-  client.puts formatter.headers
-  client.puts formatter.output
-  #-----------------------------Prints response to client on the server screen
+  puts request_lines.inspect
+
+  client.puts response.header
+  client.puts response.body
+
   puts "Sending response."
-  puts ["Wrote this response:", formatter.headers, formatter.output].join("\n")
-  puts"\n\nRequest Counter: #{request_counter}\n\n" #this is just a check
+  puts ["Wrote this response:", response.header, response.body].join("\n")
   client.close
 end
 
