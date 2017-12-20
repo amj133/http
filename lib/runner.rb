@@ -2,13 +2,14 @@ require 'socket'
 require 'pry'
 require './lib/server'
 require './lib/response'
+require './lib/guessing_game'
 require './lib/request'
+require './lib/word_lookup'
 
 tcp_server = TCPServer.new(9292)
 server = Server.new
 request = Request.new
 response = Response.new
-post = PostRequest.new
 
 until request.path == "/shutdown"
   puts "Ready for a request"
@@ -16,15 +17,13 @@ until request.path == "/shutdown"
 
   request_lines = server.request_lines(client)
   #-----------------------------------------
-  # post.read_content_length(request_lines)
-  # post_body = server.post_request_body(client, post)
-  # guess = post_body.split[4].to_i
-  # binding.pry
+  post_body = request.request_guess(client)
   #-----------------------------------------
   request.parse(request_lines)
+  response.parse(request_lines)
 
   response_message = response.create_message(request)
-  response_footer = response.create_response_footer(request)
+  response_footer = response.create_response_footer
   response_body = response.create_response_body(response_message + response_footer)
   response_header = response.create_response_header
 

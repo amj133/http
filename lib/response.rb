@@ -1,6 +1,7 @@
 require 'pry'
 require './lib/request'
 require './lib/word_lookup'
+require './lib/guessing_game'
 
 class Response < Request
   attr_reader :header, :body
@@ -10,10 +11,9 @@ class Response < Request
     @request_count = 0
   end
 
-  def create_response_footer(request)
-    footer = {Verb: request.verb, Path: request.path,
-              Protocol: request.protocol,Host: request.host, Port: request.port,
-              Origin: request.origin, Accept: request.accept}
+  def create_response_footer
+    footer = {Verb: verb, Path: path, Protocol: protocol, Host: host,
+              Port: port, Origin: origin, Accept: accept}
     printed_footer = footer.map do |key, value|
       "#{key}: #{value}\n"
     end.join.chomp
@@ -27,21 +27,26 @@ class Response < Request
                 "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
   end
 
-  def create_message(request)
+  def create_message(request=nil)
     @request_count += 1
-    if request.path == "/"
-      message_1 = ""
-    elsif request.path == "/hello"
+    if path == "/"
+      ""
+    elsif path == "/hello"
       @hello_count += 1
-      message_2 = "Hello World! (#{@hello_count})\n\n"
-    elsif request.path == "/datetime"
-      message_3 = "#{Time.now.strftime('%l:%M%p on %A, %b %e, %Y').lstrip}\n\n"
-    elsif request.path == "/shutdown"
-      message_4 =  "Total Requests: #{@request_count}\n\n"
-    elsif request.path == "/word_search"
-      word_search(request)
+      "Hello World! (#{@hello_count})\n\n"
+    elsif path == "/datetime"
+      "#{Time.now.strftime('%l:%M%p on %A, %b %e, %Y').lstrip}\n\n"
+    elsif path == "/shutdown"
+      "Total Requests: #{@request_count}\n\n"
+    elsif path == "/word_search"
+      word_search
+    elsif path == "/start_game" && verb == "POST"
+      game = GuessingGame.new
+      game.start(request.guess)
+    # elsif path == "/game" && verb == "POST"
+    # elsif path == "/game" && verb == "GET"
     else
-      message_5 = "Request path not supported :(\n\n"
+      "Request path not supported :(\n\n"
     end
   end
 
@@ -49,8 +54,8 @@ class Response < Request
     @body = "<html><head></head><body><pre>#{message}</pre></body></html>"
   end
 
-  def word_search(request)
-    seeker = WordLookup.new(request.value)
+  def word_search
+    seeker = WordLookup.new(value)
     seeker.search_dict
     seeker.search_result
   end

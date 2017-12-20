@@ -1,6 +1,5 @@
 require 'pry'
 require './lib/request'
-require './lib/post_request'
 
 class Server
 
@@ -10,10 +9,6 @@ class Server
       request_lines << line.chomp
     end
     request_lines
-  end
-
-  def post_request_body(client, post_request)
-    client.read(post_request.content_length)
   end
 
   # def send_response(client)

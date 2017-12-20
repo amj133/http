@@ -43,10 +43,30 @@ class RequestTest < Minitest::Test
     request = Request.new
 
     request.parse(["GET /word_search?word=monkey HTTP/1.1", "Host: 127.0.0.1:9292", "Upgrade-Insecure-Requests: 1", "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5", "Accept-Language: en-us", "Accept: */*", "Accept-Encoding: gzip, deflate", "Connection: keep-alive"])
-
     assert_equal "/word_search", request.path
     assert_equal "word", request.parameter
     assert_equal "monkey", request.value
   end
+
+  def test_content_length_returns_correct_integer_value
+    request = Request.new
+    request_lines = (["POST /start_game HTTP/1.1",
+                  "Host: 127.0.0.1:9292",
+                  "Connection: keep-alive",
+                  "Content-Length: 22",
+                  "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36",
+                  "Cache-Control: no-cache",
+                  "Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop",
+                  "Postman-Token: 80993bd5-276d-becf-e51b-4ad1ec930d98",
+                  "Content-Type: text/plain;charset=UTF-8",
+                  "Accept: */*",
+                  "Accept-Encoding: gzip, deflate, br",
+                  "Accept-Language: en-US,en;q=0.9"])
+
+    request.parse(request_lines)
+
+    assert_equal 22, request.content_length
+  end
+
 
 end
