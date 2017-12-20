@@ -15,9 +15,12 @@ until request.path == "/shutdown"
   client = tcp_server.accept
 
   request_lines = server.request_lines(client)
+  #-----------------------------------------
   # post.read_content_length(request_lines)
   # post_body = server.post_request_body(client, post)
+  # guess = post_body.split[4].to_i
   # binding.pry
+  #-----------------------------------------
   request.parse(request_lines)
 
   response_message = response.create_message(request)
