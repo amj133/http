@@ -13,17 +13,13 @@ class GuessingGame
   def compare(guess)
     @guess_count += 1
     if guess == @secret_number
-      "correct!!!\n
-      Guesses made: #{@guess_count}\n\n"
+      "correct!!!\nGuesses made: #{@guess_count}\n\n"
     elsif guess < @secret_number
-      "too low!\n
-      Guesses made: #{@guess_count}\n\n"
+      "too low!\nGuesses made: #{@guess_count}\n\n"
     elsif guess > @secret_number
-      "too high\n
-      Guesses made: #{@guess_count}\n\n"
+      "too high\nGuesses made: #{@guess_count}\n\n"
     else
-      "not a real guess :/\n
-      Guesses made: #{@guess_count}\n\n"
+      "not a real guess :/\nGuesses made: #{@guess_count}\n\n"
     end
   end
 

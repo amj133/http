@@ -5,10 +5,11 @@ require './lib/request'
 require './lib/response'
 
 server = Server.new
+server.start_server
 request = Request.new
 response = Response.new
 
-until request.path == "/shutdown" && request.verb == "GET"
+until request.path == "/shutdown"
   client = server.listen
   request_lines = server.get_request_lines
   server.parse_request(request, request_lines)

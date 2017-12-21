@@ -8,21 +8,24 @@ require 'pry'
 
 class ServerTest < Minitest::Test
 
-  def setup
-    @server = Server.new
-  end
+  # def setup # removed
+  #   @server = Server.new
+  # end
 
   def test_it_exists
-    assert_instance_of Server, @server
+    server = Server.new
+
+    assert_instance_of Server, server
   end
 
   def test_request_lines_stores_client_request
-    request = Request.new
+    # request = Request.new
 
-    @server.listen
+    # @server.listen
     send_request = Faraday.get("http://127.0.0.1:9292")
 
-    request_lines = @server.get_request_lines
+
+    require 'pry'; binding.pry
 
     assert_equal "GET", request.verb
     assert_equal "/", request.path
