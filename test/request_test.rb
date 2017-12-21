@@ -68,5 +68,4 @@ class RequestTest < Minitest::Test
     assert_equal 22, request.content_length
   end
 
-
 end

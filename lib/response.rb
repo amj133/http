@@ -20,11 +20,21 @@ class Response < Request
   end
 
   def create_response_header
-    @header = ["http/1.1 200 ok",
-                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-                "server: ruby",
-                "content-type: text/html; charset=iso-8859-1",
-                "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
+    if path == "/game" && verb == "POST"
+      @header = ["http/1.1 302 Found",
+                 "Location: http://127.0.0.1:9292/game",
+                 "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+                 "server: ruby",
+                 "content-type: text/html; charset=iso-8859-1",
+                 "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
+    else
+      @header = ["http/1.1 200 ok",
+                 "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+                 "server: ruby",
+                 "content-type: text/html; charset=iso-8859-1",
+                 "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
+    end
+
   end
 
   def create_message(request)
@@ -42,11 +52,10 @@ class Response < Request
       word_search
     elsif path == "/start_game" && verb == "POST"
       start_game
-      "Good luck!\n\n"
     elsif path == "/game" && verb == "GET"
-      compare_guess(request)
-    elsif path == "/game" && verb == "POST"
-      compare_guess(request)
+      "Your most recent guess #{request.guess} is " + compare_guess(request)
+    # elsif path == "/game" && verb == "POST"
+    #   compare_guess(request)
     else
       "Request path not supported :(\n\n"
     end
@@ -54,6 +63,7 @@ class Response < Request
 
   def start_game
     @game = GuessingGame.new
+    "Good luck!\n\n"
   end
 
   def compare_guess(request)
