@@ -11,16 +11,18 @@ server = Server.new
 request = Request.new
 response = Response.new
 
-until request.path == "/shutdown"
+until request.path == "/shutdown" && request.verb == "GET"
   puts "Ready for a request"
   client = tcp_server.accept
-
+  # binding.pry
   request_lines = server.request_lines(client)
-  #-----------------------------------------
-  post_body = request.request_guess(client)
-  #-----------------------------------------
+  # binding.pry
   request.parse(request_lines)
   response.parse(request_lines)
+  #-----------------------------------------
+  guess = request.request_guess(client)
+  # binding.pry
+  #-----------------------------------------
 
   response_message = response.create_message(request)
   response_footer = response.create_response_footer

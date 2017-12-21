@@ -27,27 +27,37 @@ class Response < Request
                 "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
   end
 
-  def create_message(request=nil)
+  def create_message(request)
     @request_count += 1
     if path == "/"
       ""
-    elsif path == "/hello"
+    elsif path == "/hello" && verb == "GET"
       @hello_count += 1
       "Hello World! (#{@hello_count})\n\n"
-    elsif path == "/datetime"
+    elsif path == "/datetime" && verb == "GET"
       "#{Time.now.strftime('%l:%M%p on %A, %b %e, %Y').lstrip}\n\n"
-    elsif path == "/shutdown"
+    elsif path == "/shutdown" && verb == "GET"
       "Total Requests: #{@request_count}\n\n"
-    elsif path == "/word_search"
+    elsif path == "/word_search" && verb == "GET"
       word_search
     elsif path == "/start_game" && verb == "POST"
-      game = GuessingGame.new
-      game.start(request.guess)
-    # elsif path == "/game" && verb == "POST"
-    # elsif path == "/game" && verb == "GET"
+      start_game
+      "Good luck!\n\n"
+    elsif path == "/game" && verb == "GET"
+      compare_guess(request)
+    elsif path == "/game" && verb == "POST"
+      compare_guess(request)
     else
       "Request path not supported :(\n\n"
     end
+  end
+
+  def start_game
+    @game = GuessingGame.new
+  end
+
+  def compare_guess(request)
+    @game.compare(request.guess)
   end
 
   def create_response_body(message)

@@ -1,7 +1,7 @@
 require 'pry'
 require './lib/request'
 
-class Server
+class Server 
 
   def request_lines(client)
     request_lines = []

@@ -10,39 +10,21 @@ class GuessingGame
     @guess_count = 0
   end
 
-  def start(client, guess)
+  def compare(guess)
     @guess_count += 1
     if guess == @secret_number
-      create_message = "You guessed correctly!!!\n
-      #{@guess_count} guesses were made\n\n"
+      "You guessed correctly!!!\n
+      Guesses made: #{@guess_count}\n\n"
     elsif guess < @secret_number
-      create_message = "Your guess is too low!\n
-      #{@guess_count} guesses have been made\n\n"
+      "Your guess is too low!\n
+      Guesses made: #{@guess_count}\n\n"
     elsif guess > @secret_number
-      create_message = "Your guess is too high
-      #{@guess_count} guesses have been made\n\n"
+      "Your guess is too high\n
+      Guesses made: #{@guess_count}\n\n"
     else
-      create_message = "C'mon, make a REAL guess!\n
-      #{@guess_count} guesses have been made\n\n"
+      "C'mon, make a REAL guess!\n
+      Guesses made: #{@guess_count}\n\n"
     end
   end
-
-  # def compare(guess)
-  #   @guess_count += 1
-  #   @guess = guess
-  #   if @guess == @secret_number
-  #     "You guessed correctly!!!\n
-  #     #{@guess_count} guesses were made\n\n"
-  #   elsif @guess < @secret_number
-  #     "Your guess is too low!\n
-  #     #{@guess_count} guesses have been made\n\n"
-  #   elsif @guess > @secret_number
-  #     "Your guess is too high
-  #     #{@guess_count} guesses have been made\n\n"
-  #   else
-  #     "C'mon, make a REAL guess!\n
-  #     #{@guess_count} guesses have been made\n\n"
-  #   end
-  # end
 
 end

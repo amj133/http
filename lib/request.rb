@@ -2,7 +2,8 @@ require 'pry'
 
 class Request
   attr_reader :verb, :path, :parameter, :value, :protocol,
-              :host, :port, :origin, :accept, :content_length
+              :host, :port, :origin, :accept, :content_length,
+              :guess
 
   def parse(request_lines)
     first_line = request_lines[0].split(" ") # => ['GET', '/', 'HTTP/1.1']
@@ -22,6 +23,7 @@ class Request
   end
 
   def request_guess(client)
+    return nil if self.verb == "GET"
     body = client.read(content_length)
     @guess = body.split[4].to_i
   end
