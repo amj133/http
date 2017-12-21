@@ -19,25 +19,31 @@ class Response < Request
     end.join.chomp
   end
 
+  def redirect
+  end
+
   def create_response_header
-    if path == "/game" && verb == "POST"
-      @header = ["http/1.1 302 Found",
-                 "Location: http://127.0.0.1:9292/game",
+    # if path == "/game" && verb == "POST"
+    #   @header = ["http/1.1 302 Found",
+    #              "Location: http://127.0.0.1:9292/game",
+    #              "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+    #              "server: ruby",
+    #              "content-type: text/html; charset=iso-8859-1",
+    #              "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
+    # else
+      @header = ["http/1.1 #{@status_code}", # 200 ok",
+                 "Location: #{@location}", # not present
                  "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                  "server: ruby",
                  "content-type: text/html; charset=iso-8859-1",
                  "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
-    else
-      @header = ["http/1.1 200 ok",
-                 "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-                 "server: ruby",
-                 "content-type: text/html; charset=iso-8859-1",
-                 "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
-    end
+    # end
 
   end
 
   def create_message(request)
+    @status_code =  "200 OK" # not present
+    @location = ""
     @request_count += 1
     if path == "/"
       ""
@@ -54,10 +60,14 @@ class Response < Request
       start_game
     elsif path == "/game" && verb == "GET"
       "Your most recent guess #{request.guess} is " + compare_guess(request)
+    elsif path == "/game" && verb == "POST"
+      @status_code = "302 Found"
+      @location = "http://127.0.0.1:9292/game"
     # elsif path == "/game" && verb == "POST"
     #   compare_guess(request)
     else
-      "Request path not supported :(\n\n"
+      @status_code = "404 Not Found\n\n"
+      # "Request path not supported :(\n\n"
     end
   end
 
