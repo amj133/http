@@ -4,7 +4,7 @@ require './lib/word_lookup'
 require './lib/guessing_game'
 
 class Response < Request
-  attr_reader :header, :body
+  attr_reader :header, :body, :game # :game not present
 
   def initialize
     @hello_count = 0
@@ -15,7 +15,7 @@ class Response < Request
     footer = {Verb: verb, Path: path, Protocol: protocol, Host: host,
               Port: port, Origin: origin, Accept: accept}
     printed_footer = footer.map do |key, value|
-      "#{key}: #{value}\n"
+      "\n#{key}: #{value}"
     end.join.chomp
   end
 
@@ -42,8 +42,9 @@ class Response < Request
   end
 
   def create_message(request)
+    # remove \n\n after status code
     @status_code =  "200 OK" # not present
-    @location = ""
+    @location = "" # not present
     @request_count += 1
     if path == "/"
       ""
@@ -57,7 +58,11 @@ class Response < Request
     elsif path == "/word_search" && verb == "GET"
       word_search
     elsif path == "/start_game" && verb == "POST"
-      start_game
+      if game.nil?
+        start_game      # previously the only line
+      else
+        @status_code = "403 Forbidden"# unless !game.nil?
+      end
     elsif path == "/game" && verb == "GET"
       "Your most recent guess #{request.guess} is " + compare_guess(request)
     elsif path == "/game" && verb == "POST"
@@ -65,8 +70,10 @@ class Response < Request
       @location = "http://127.0.0.1:9292/game"
     # elsif path == "/game" && verb == "POST"
     #   compare_guess(request)
+    elsif path == "/force_error"
+      @status_code = "500 Internal Server Errror"
     else
-      @status_code = "404 Not Found\n\n"
+      @status_code = "404 Not Found"
       # "Request path not supported :(\n\n"
     end
   end
