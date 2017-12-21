@@ -13,7 +13,7 @@ class Response < Request
 
   def create_response_footer
     footer = {Verb: verb, Path: path, Protocol: protocol, Host: host,
-              Port: port, Origin: origin, Accept: accept}
+              Port: port, Origin: host, Accept: accept}
     printed_footer = footer.map do |key, value|
       "\n#{key}: #{value}"
     end.join.chomp
