@@ -1,7 +1,6 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/guessing_game'
-require 'pry'
 
 class GuessingGameTest < Minitest::Test
 
@@ -20,11 +19,21 @@ class GuessingGameTest < Minitest::Test
   def test_guess_count_increases_with_each_comparison
     game = GuessingGame.new
 
+    assert_equal 0, game.guess_count
+
     game.compare(13)
     game.compare(14)
     game.compare(15)
 
     assert_equal 3, game.guess_count
+  end
+
+  def test_compare_returns_a_string
+    game = GuessingGame.new
+
+    assert_instance_of String, game.compare(15)
+    assert_instance_of String, game.compare(-5)
+    assert_instance_of String, game.compare(110)
   end
 
 end

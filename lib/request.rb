@@ -6,7 +6,8 @@ class Request
               :guess
 
   def parse(request_lines)
-    first_line = request_lines[0].split
+    first_line = request_lines[0].split #=> ['GET', '/', HTTP/1.1]
+    @verb = first_line[0]
     @path = first_line[1].split("?")[0]
     @value = first_line[1].split("?")[1].split("=")[1] unless first_line[1].split("?")[1].nil?
     @protocol = first_line[2]

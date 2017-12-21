@@ -2,15 +2,10 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/server'
 require './lib/request'
-require 'socket'
 require 'Faraday'
 require 'pry'
 
 class ServerTest < Minitest::Test
-
-  # def setup # removed
-  #   @server = Server.new
-  # end
 
   def test_it_exists
     server = Server.new

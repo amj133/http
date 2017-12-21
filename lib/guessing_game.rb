@@ -1,6 +1,3 @@
-require './lib/response'
-require './lib/word_lookup'
-require './lib/request'
 
 class GuessingGame
   attr_reader :secret_number, :guess_count

@@ -1,4 +1,3 @@
-require 'pry'
 
 class WordLookup
 
@@ -14,8 +13,11 @@ class WordLookup
   end
 
   def search_result
-    return "#{@word.capitalize} is not a known word\n\n" if search_dict.nil?
-    return "#{@word.capitalize} is a known word\n\n" if search_dict.nil? == false
+    if search_dict.nil?
+      "#{@word.capitalize} is not a known word\n\n"
+    elsif search_dict.nil? == false
+      "#{@word.capitalize} is a known word\n\n"
+    end
   end
 
 end
