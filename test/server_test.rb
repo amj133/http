@@ -1,10 +1,5 @@
-require 'minitest/autorun'
-require 'minitest/pride'
 require './lib/server'
-require './lib/response'
-require './lib/request'
 require 'Faraday'
-require 'socket'
 
 class ServerTest < Minitest::Test
 

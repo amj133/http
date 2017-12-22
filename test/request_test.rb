@@ -1,7 +1,5 @@
-require 'minitest/autorun'
-require 'minitest/pride'
 require './lib/request'
-require 'pry'
+require 'Faraday'
 
 class RequestTest < Minitest::Test
 
@@ -77,5 +75,21 @@ class RequestTest < Minitest::Test
 
     assert_equal 22, request.content_length
   end
+
+  def test_post_request_is_parsed_into_correct_values
+    request = Request.new
+    requester = Faraday.new(:url => 'http://127.0.0.1:9292')
+
+    requester.get '/start_game'
+    post_response = requester.post '/game', { :guess => '50' }
+    post_response_split = post_response.body.split("\n")
+
+    assert_equal 'POST', post_response_split[1].split[1]
+    assert_equal '/game', post_response_split[2].split[1]
+    assert_equal 'HTTP/1.1', post_response_split[3].split[1]
+  end
+
+
+
 
 end

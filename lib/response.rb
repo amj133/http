@@ -84,7 +84,7 @@ class Response < Request
   def check_guess_response(request)
     case verb
     when 'GET'
-      if request.guess.nil?
+      if request.guess.nil? || game.nil?
         "You have to make a guess first!"
       else
         "Your most recent guess #{request.guess} is " + compare_guess(request)

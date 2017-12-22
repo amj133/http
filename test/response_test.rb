@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-require 'minitest/pride'
 require './lib/response'
 
 class ResponseTest < Minitest::Test
