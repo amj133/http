@@ -14,7 +14,11 @@ class Request
     @content_length = request_lines[3].split(" ")[1].to_i
     @host = request_lines[1].split[1].split(":")[0]
     @port = request_lines[1].split[1].split(":")[1]
-    @accept = request_lines[9].split[1] unless request_lines[9].nil?
+    # @accept = request_lines[6].split[1] unless request_lines[6].nil?
+    accept_line = request_lines.find do |line|
+      line.split(" ")[0] == "Accept:"
+    end
+    @accept = accept_line.split(" ")[1]
   end
 
   def request_guess(client)

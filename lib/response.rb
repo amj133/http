@@ -20,12 +20,16 @@ class Response < Request
   end
 
   def create_response_header
-      @header = ["http/1.1 #{@status_code}", # 200 ok",
-                 "Location: #{@location}", # not present
+      @header = ["http/1.1 #{@status_code}",
+                 "Location: #{@location}",
                  "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                  "server: ruby",
                  "content-type: text/html; charset=iso-8859-1",
                  "content-length: #{@body.length}\r\n\r\n"].join("\r\n")
+  end
+
+  def create_response_body(message)
+    @body = "<html><head></head><body><pre>#{message}</pre></body></html>"
   end
 
   def create_message(request)
@@ -58,6 +62,12 @@ class Response < Request
     "Total Requests: #{@request_count}\n\n"
   end
 
+  def word_search
+    seeker = WordLookup.new(value)
+    seeker.search_dict
+    seeker.search_result
+  end
+
   def begin_guessing_response
     if game.nil?
       start_game
@@ -66,37 +76,31 @@ class Response < Request
     end
   end
 
+  def start_game
+    @game = GuessingGame.new
+    "Good luck!\n\n"
+  end
+
   def check_guess_response(request)
     case verb
     when 'GET'
-      "Your most recent guess #{request.guess} is " + compare_guess(request)
+      if request.guess.nil?
+        "You have to make a guess first!"
+      else
+        "Your most recent guess #{request.guess} is " + compare_guess(request)
+      end
     when 'POST'
       @status_code = "301 Moved Permanently"
       @location = "http://127.0.0.1:9292/game"
     end
   end
 
-  def error_response
-    @status_code = "500 Internal Server Errror"
-  end
-
-  def start_game
-    @game = GuessingGame.new
-    "Good luck!\n\n"
-  end
-
   def compare_guess(request)
     @game.compare(request.guess)
   end
 
-  def create_response_body(message)
-    @body = "<html><head></head><body><pre>#{message}</pre></body></html>"
-  end
-
-  def word_search
-    seeker = WordLookup.new(value)
-    seeker.search_dict
-    seeker.search_result
+  def error_response
+    @status_code = "500 Internal Server Error"
   end
 
 end
