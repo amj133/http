@@ -1,13 +1,7 @@
-require 'pry'
 
 class Server
-  attr_reader :port
 
-  # def initialize
-  #   @port = TCPServer.new(9292)
-  # end
-
-  def start_server # added
+  def start_server
     @port = TCPServer.new(9292)
   end
 
